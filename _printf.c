@@ -1,51 +1,51 @@
 #include "main.h"
 
-
 /**
- * _printf - output conversion and data prints.
+ * _printf - formatted output conversion and print data.
  * @format: input string.
+ *
  * Return: number of chars printed.
  */
 int _printf(const char *format, ...)
 {
-int i = 0, j, executed = 0;
-va_list string;
-printer_t funcs[] = {{'c', pr_char}, {'i', pr_int}, {'d', pr_uns},
-{'s', pr_str}, {'%', pr_per}, {'b', pr_bin}};
-va_start(string, format);
-if (format == NULL)
-return (-1);
-while (format != NULL && *format)
-{
-if (*format != '%' && format != NULL && *format)
-{
-_putchar(*format);
-format++;
-i++;
-}
-else if (*format == '%' && format != NULL && *format)
-{
-if (!*(format + 1))
-return (-1);
-format++, j = 0, executed = 0;
-while (funcs[j].symbol)
-{
-if (*format == funcs[j].symbol)
-{
-i += funcs[j].print(string);
-executed = 1;
-}
-j++;
-}
-if (executed == 0)
-{
-_putchar('%');
-_putchar(*format);
-i += 2;
-}
-format++;
-}
-}
-va_end(string);
-return (i);
+	unsigned int i = 0, len = 0, ibuf = 0;
+	va_list arguments;
+	int (*function)(va_list, char *, unsigned int);
+	char *buffer;
+
+	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
+	if (!format || !buffer || (format[i] == '%' && !format[i + 1]))
+		return (-1);
+	if (!format[i])
+		return (0);
+	for (i = 0; format && format[i]; i++)
+	{
+		if (format[i] == '%')
+		{
+			if (format[i + 1] == '\0')
+			{	print_buf(buffer, ibuf), free(buffer), va_end(arguments);
+				return (-1);
+			}
+			else
+			{	function = get_print_func(format, i + 1);
+				if (function == NULL)
+				{
+					if (format[i + 1] == ' ' && !format[i + 2])
+						return (-1);
+					handl_buf(buffer, format[i], ibuf), len++, i--;
+				}
+				else
+				{
+					len += function(arguments, buffer, ibuf);
+					i += ev_print_func(format, i + 1);
+				}
+			} i++;
+		}
+		else
+			handl_buf(buffer, format[i], ibuf), len++;
+		for (ibuf = len; ibuf > 1024; ibuf -= 1024)
+			;
+	}
+	print_buf(buffer, ibuf), free(buffer), va_end(arguments);
+	return (len);
 }
