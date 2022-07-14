@@ -4,10 +4,10 @@
 int _strcmp(char *, char *);
 
 /**
- * print_pointer - Print a number in hexadecimal format
+ * print_pointer - Prints a number in hexadecimal format,
  * @list: Number to print
  *
- * Return: Length of the number
+ * Return: Length of the number.
  **/
 int print_pointer(va_list list)
 {
@@ -30,7 +30,7 @@ int print_pointer(va_list list)
 }
 
 /**
- * _strcmp - Compare two strings
+ * _strcmp - Compares two strings.
  * @s1: String 1
  * @s2: String 2
  * Return: Integer
